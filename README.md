@@ -12,5 +12,5 @@ The UI features some animations, and the background image changes based on the c
 Please give my app a look to see what I can do. 
 The directory you want to look in (where the files containing most of my code are) is:   app/src/main/java/com/steve/weatherquest.
 
- It can also be downloaded from the Google Play Store at the following address:
-https://play.google.com/store/apps/details?id=com.steve.weatherquest
+ It can also be downloaded from the Google Play Store [here](https://play.google.com/store/apps/details?id=com.steve.weatherquest).
+
