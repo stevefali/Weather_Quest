@@ -39,7 +39,7 @@ import javax.inject.Singleton
 
 enum class WeatherApiStatus { LOADING, ERROR, DONE }
 
-private const val APIKEY = "c27a7a9f7b9e73032492f46d68d285ba"
+private const val APIKEY = "Private"
 private const val UNITS_METRIC = "metric"
 
 private const val DATE_SKELETON = "EEE d MMM"

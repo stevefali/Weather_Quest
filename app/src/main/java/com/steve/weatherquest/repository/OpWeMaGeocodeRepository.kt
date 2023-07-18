@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Singleton
 
-private const val APIKEY = "c27a7a9f7b9e73032492f46d68d285ba"
+private const val APIKEY = "Private"
 
 @Singleton
 class OpWeMaGeocodeRepository {

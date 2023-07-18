@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Singleton
 
-private const val APIKEY = "0P2flTgAd4muE9l_3wZ4IKXeJdoC1uz9kHM1eP2QQEQ"
+private const val APIKEY = "Private"
 
 @Singleton
 class AutoCompleteRepository {
