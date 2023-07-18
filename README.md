@@ -1,5 +1,4 @@
 # Weather_Quest
-Sample Android App
 
 
 Thank you for taking the time to check out my code!
