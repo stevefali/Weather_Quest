@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Weather Quest</string>
+
+    <string name="location_lat_long">Lat: %1$f Lng: %2$f</string>
+    <string name="no_location">Location Null!!</string>
+    <string name="no_permission">Please allow permission to access device location</string>
+
+    <string name="permission_rationale_message">Permission is required to access your device\'s location.</string>
+
+    <string name="search">Search</string>
+    <string name="no_results">No results</string>
+
+    <string name="pop">POP: %d\%%</string>
+    <string name="pop_plain">POP:\u0020</string>
+    <string name="high">High</string>
+    <string name="low">Low</string>
+    <string name="wind">Wind: %f</string>
+    <string name="wind_plain">Wind:\u0020</string>
+    <string name="wind_gust">Gust: %f</string>
+    <string name="wind_gust_plain">Gust:\u0020</string>
+
+    <string name="degrees">°%s</string>
+    <string name="temp_and_degrees">%1s°%2s</string>
+
+    <string name="feels_like">Feels Like</string>
+    <string name="visibility">Visibility:\u0020</string>
+    <string name="rain">Rain:\u0020</string>
+    <string name="snow">Snow:\u0020</string>
+    <string name="humidity">Humidity:\u0020</string>
+
+    <string name="forecast">Forecast</string>
+    <string name="current_weather">Current Weather</string>
+
+    <string name="as_of">As of\u0020</string>
+
+    <string name="play_services_unavailable">Google Play Services are unavailable on your device :(</string>
+
+    <string name="network_error">Network Error</string>
+
+    <string name="weather_icons">Weather Icons</string>
+
+    <string name="metric">Metric</string>
+    <string name="imperial">Imperial</string>
+    <string name="menu">Menu</string>
+    <string name="privacy_policy">Privacy Policy</string>
+
+    <string name="choose_location_prompt">To get started, search for a location or touch the GPS icon.</string>
+
+</resources>
