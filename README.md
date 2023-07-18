@@ -2,9 +2,10 @@
 Sample Android App
 
 
+Thank you for taking the time to check out my code!
 
 I made this app as a simple demonstration to show what I can do as a developer. 
-It uses Jetpack Compose and libraries such as Hilt, Room, Retrofit, and Moshi. 
+It uses Android Jetpack Compose and other libraries such as Hilt, Room, Retrofit, and Moshi. 
 Users can get weather data based on their device’s location or search for a location using the search bar. 
 The search bar gives suggestions for locations as the user types. 
 Once a location is chosen, the app fetches the weather data from a server and displays the current weather and forecast for the selected location. 
