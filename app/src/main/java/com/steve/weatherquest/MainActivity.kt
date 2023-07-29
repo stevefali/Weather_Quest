@@ -92,6 +92,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.updateBothWeathers(false)
+    }
+
 
     // This is only ever triggered by LocationPermissionState's 'onResult' when permission is granted.
     fun getLocation() {
