@@ -13,6 +13,7 @@ import com.steve.weatherquest.repository.OpWeMaGeocodeRepository
 import com.steve.weatherquest.repository.OpenWeatherRepository
 import com.steve.weatherquest.repository.SettingsDataStoreRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import hilt_aggregated_deps._dagger_hilt_android_internal_lifecycle_DefaultViewModelFactories_FragmentEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -28,6 +29,8 @@ class MainViewModel @Inject constructor(
     dataStore: SettingsDataStoreRepository,
     weatherDao: WeatherDatabaseDao
 ) : ViewModel() {
+
+
 
     // Current location (Could be null)
     val deviceLocation = locationRepository.currentLocation
@@ -276,21 +279,16 @@ class MainViewModel @Inject constructor(
 
 
     fun switchMetric() {
-//        myOpenWeatherRepository.switchUnits(!_otherMetric.value)
-//        setIsMetric(!_otherMetric.value)
-
         myOpenWeatherRepository.switchUnits(!metric)
         setIsMetric(!metric)
     }
 
 
-    // Testing
     fun setIsMetric(metric: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             myDataStore.saveIsMetric(metric)
         }
     }
-
 
 }
 
