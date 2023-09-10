@@ -7,7 +7,7 @@ import com.steve.weatherquest.models.OpenWeatherCurrentModel
 import com.steve.weatherquest.models.OpenWeatherForecastModel
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
@@ -27,7 +27,7 @@ private val retrofitOpenWeatherMap = Retrofit.Builder()
 interface OpenWeatherMapApiService {
 
     // Current weather
-    @GET("weather")
+    @POST("weather")
     suspend fun getCurrentWeatherResponse(
         @Query("lat") lat: String,
         @Query("lon") lon: String,
@@ -38,7 +38,7 @@ interface OpenWeatherMapApiService {
 
 
     // 5-day forecast
-    @GET("forecast")
+    @POST("forecast")
     suspend fun getFiveDayForecastResponse(
         @Query("lat") lat: String,
         @Query("lon") lon: String,
