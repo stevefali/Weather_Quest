@@ -5,6 +5,9 @@ plugins {
     id 'dagger.hilt.android.plugin'
 }
 
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properites")))
+
 android {
     namespace 'com.steve.weatherquest'
     compileSdk 33
@@ -20,6 +23,10 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        resValue("string", "here_api_key", localProperties.getProperty("HERE_API_KEY"))
+        resValue("string", "opwema_api_key", localProperties.getProperty("OPWEMA_API_KEY"))
+
     }
 
     buildTypes {
