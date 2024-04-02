@@ -14,3 +14,11 @@ The directory you want to look in (where the files containing most of my code ar
 
  It can also be downloaded from the Google Play Store [here](https://play.google.com/store/apps/details?id=com.steve.weatherquest).
 
+
+ To run this project on your own, you would need to first obtain api keys from [OpenWeatherMap](https://openweathermap.org/api) and the [Here Api](https://developer.here.com).
+ Those api keys can then be stored in the local.properties file as follows:
+ ```
+HERE_API_KEY="[Your_Api_Key]"
+OPWEMA_API_KEY="[Your_Api_Key]"
+```
+(Note that the quotation marks are necessary.)
