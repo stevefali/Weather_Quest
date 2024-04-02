@@ -314,7 +314,6 @@ fun WeatherDisplay(
                 isMenuShown = isMenuShown,
                 showMenu = { viewModel.showMenu() },
             )
-            Log.d(TAG, "TestApiKey: ${BuildConfig.HERE_API_KEY}")
         }
     }
 }

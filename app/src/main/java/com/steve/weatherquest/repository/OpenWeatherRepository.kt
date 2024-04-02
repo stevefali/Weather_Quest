@@ -3,6 +3,7 @@ package com.steve.weatherquest.repository
 import android.text.format.DateFormat
 import android.util.Log
 import androidx.annotation.DrawableRes
+import com.steve.weatherquest.BuildConfig
 import com.steve.weatherquest.R
 import com.steve.weatherquest.data.CityDatabaseEntity
 import com.steve.weatherquest.models.*
@@ -39,7 +40,7 @@ import javax.inject.Singleton
 
 enum class WeatherApiStatus { LOADING, ERROR, DONE }
 
-private const val APIKEY = "c27a7a9f7b9e73032492f46d68d285ba"
+private const val APIKEY = BuildConfig.OPWEMA_API_KEY
 private const val UNITS_METRIC = "metric"
 
 private const val DATE_SKELETON = "EEE d MMM"
