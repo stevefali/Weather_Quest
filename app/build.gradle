@@ -1,3 +1,8 @@
+
+
+
+
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
@@ -6,7 +11,12 @@ plugins {
 }
 
 def localProperties = new Properties()
-localProperties.load(new FileInputStream(rootProject.file("local.properites")))
+
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
+
+
+
 
 android {
     namespace 'com.steve.weatherquest'
@@ -24,8 +34,8 @@ android {
             useSupportLibrary true
         }
 
-        resValue("string", "here_api_key", localProperties.getProperty("HERE_API_KEY"))
-        resValue("string", "opwema_api_key", localProperties.getProperty("OPWEMA_API_KEY"))
+        buildConfigField("String", "HERE_API_KEY", localProperties.getProperty("HERE_API_KEY"))
+        buildConfigField("String", "OPWEMA_API_KEY", localProperties.getProperty("OPWEMA_API_KEY"))
 
     }
 

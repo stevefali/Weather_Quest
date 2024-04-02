@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -313,7 +314,7 @@ fun WeatherDisplay(
                 isMenuShown = isMenuShown,
                 showMenu = { viewModel.showMenu() },
             )
-
+            Log.d(TAG, "TestApiKey: ${BuildConfig.HERE_API_KEY}")
         }
     }
 }
