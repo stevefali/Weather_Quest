@@ -6,6 +6,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
+import com.steve.weatherquest.BuildConfig
 import com.steve.weatherquest.models.AutoCompleteResponseModel
 import com.steve.weatherquest.network.HereAutoCompleteApi
 import com.steve.weatherquest.ui.theme.TextOnHighlightDarkTheme
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Singleton
 
-private const val APIKEY = "0P2flTgAd4muE9l_3wZ4IKXeJdoC1uz9kHM1eP2QQEQ"
+private const val APIKEY = BuildConfig.HERE_API_KEY
 
 @Singleton
 class AutoCompleteRepository {
