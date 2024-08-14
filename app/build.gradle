@@ -20,12 +20,12 @@ localProperties.load(new FileInputStream(rootProject.file("local.properties")))
 
 android {
     namespace 'com.steve.weatherquest'
-    compileSdk 33
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.steve.weatherquest"
         minSdk 24
-        targetSdk 33
+        targetSdk 35
         versionCode 3
         versionName '1.2'
 
