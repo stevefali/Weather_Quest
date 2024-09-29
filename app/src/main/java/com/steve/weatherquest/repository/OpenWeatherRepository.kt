@@ -74,9 +74,10 @@ class OpenWeatherRepository @Inject constructor(
         MutableStateFlow<List<List<ForecastDisplayableModel>>?>(null)
     val sortedForecastDisplayable = _sortedForecastDisplayable.asStateFlow()
 
+
     // Forecast whole days displayable
-    private val _forecastWholeDaysDisplayable = MutableStateFlow<List<ForecastWholeDayModel>?>(null)
-    val forecastWholeDaysDisplayable = _forecastWholeDaysDisplayable.asStateFlow()
+    private var forecastWholeDaysDisplayable: List<ForecastWholeDayModel>? = null
+//    val forecastWholeDaysDisplayable = _forecastWholeDaysDisplayable.asStateFlow()
 
 
     private val _weatherApiStatus = MutableStateFlow<WeatherApiStatus>(WeatherApiStatus.DONE)
@@ -194,7 +195,11 @@ class OpenWeatherRepository @Inject constructor(
         return currentWeatherDisplayable
     }
 
-    suspend fun callForecastWeather(lat: String, lon: String, onError: () -> Unit) {
+    suspend fun callForecastWeather(
+        lat: String,
+        lon: String,
+        onError: () -> Unit
+    ): List<ForecastWholeDayModel>? {
         withContext(Dispatchers.IO) {
             _weatherApiStatus.value = WeatherApiStatus.LOADING
 
@@ -233,7 +238,7 @@ class OpenWeatherRepository @Inject constructor(
                         _weatherCity.value = setupCity()
                         _sortedForecastDisplayable.value =
                             separateByDate(_forecastWeatherDisplayable!!)
-                        setupForecastWholeDays()
+                        setForecastWholeDays()
                         onCancelShowFocused() // Make sure we're not displaying focused view
                         _weatherApiStatus.value = WeatherApiStatus.DONE
                         // Write the new data to the database
@@ -266,13 +271,14 @@ class OpenWeatherRepository @Inject constructor(
                     _forecastWeatherDisplayable = setupForecastDisplayable()
                     _weatherCity.value = setupCity()
                     _sortedForecastDisplayable.value = separateByDate(_forecastWeatherDisplayable!!)
-                    setupForecastWholeDays()
+                    setForecastWholeDays()
                     onCancelShowFocused() // Make sure we're not displaying focused view
                 }
                 _weatherApiStatus.value = WeatherApiStatus.DONE
             }
             isNewForecastQuery = false // Reset isNewQuery
         }
+        return forecastWholeDaysDisplayable
     }
 
     suspend fun fetchCurrentWeatherFromDatabase() {
@@ -313,7 +319,7 @@ class OpenWeatherRepository @Inject constructor(
             _forecastWeatherDisplayable = setupForecastDisplayable()
             _weatherCity.value = setupCity()
             _sortedForecastDisplayable.value = separateByDate(_forecastWeatherDisplayable!!)
-            setupForecastWholeDays()
+            setForecastWholeDays()
             onCancelShowFocused() // Make sure we're not displaying focused view
             _weatherApiStatus.value = WeatherApiStatus.DONE
         }
@@ -650,7 +656,7 @@ class OpenWeatherRepository @Inject constructor(
     }
 
     // Set the whole day values
-    private fun setupForecastWholeDays() {
+    private fun setForecastWholeDays() {
         val wholeDayList = mutableListOf<ForecastWholeDayModel>()
         for (dayList in _sortedForecastDisplayable.value!!) {
             val dayCodes = mutableListOf<Int>()
@@ -721,7 +727,7 @@ class OpenWeatherRepository @Inject constructor(
                 )
             )
         }// day end
-        _forecastWholeDaysDisplayable.value = wholeDayList
+        forecastWholeDaysDisplayable = wholeDayList
     }
 
 
@@ -855,7 +861,7 @@ class OpenWeatherRepository @Inject constructor(
     fun switchUnits(newIsMetric: Boolean) {
         isMetric = newIsMetric
         // Renew the whole List
-        setupForecastWholeDays()
+        setForecastWholeDays()
         setCurrentDisplayable()
         setupPeriodDisplayable()
     }

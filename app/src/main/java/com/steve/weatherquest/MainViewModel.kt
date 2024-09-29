@@ -7,6 +7,7 @@ import com.steve.weatherquest.data.LocationRepository
 import com.steve.weatherquest.data.PlayServicesAvailabilityChecker
 import com.steve.weatherquest.data.WeatherDatabaseDao
 import com.steve.weatherquest.models.ForecastPeriodModel
+import com.steve.weatherquest.models.ForecastWholeDayModel
 import com.steve.weatherquest.models.HereAddress
 import com.steve.weatherquest.models.OpWeMaGeocodeResponseModel
 import com.steve.weatherquest.repository.AutoCompleteRepository
@@ -75,6 +76,9 @@ class MainViewModel @Inject constructor(
 
     private val _currentWeatherDisplayable = MutableStateFlow<ForecastPeriodModel?>(null)
     val currentWeatherDisplayable = _currentWeatherDisplayable.asStateFlow()
+
+    private var _forecastWholeDaysDisplayable = MutableStateFlow<List<ForecastWholeDayModel>?>(null)
+    val forecastWholeDaysDisplayable = _forecastWholeDaysDisplayable.asStateFlow()
 
     val myOpenWeatherRepository = openWeatherRepository
 
@@ -261,7 +265,7 @@ class MainViewModel @Inject constructor(
 
     private fun doTheOpenWeatherForecastCall() {
         viewModelScope.launch {
-            myOpenWeatherRepository.callForecastWeather(
+            _forecastWholeDaysDisplayable.value = myOpenWeatherRepository.callForecastWeather(
                 lat = _weatherLocation?.lat.toString(),
                 lon = _weatherLocation?.lon.toString(),
                 onError = { triggerSnackbar("Network Error. New weather data not available.") }
