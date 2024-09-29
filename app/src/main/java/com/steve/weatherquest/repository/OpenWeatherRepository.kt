@@ -67,18 +67,13 @@ class OpenWeatherRepository @Inject constructor(
 
 
     // Forecast weather displayable
-    private var _forecastWeatherDisplayable: List<ForecastDisplayableModel>? = null
+    private var forecastWeatherDisplayable: List<ForecastDisplayableModel>? = null
 
     // Forecast displayable separated by date
-    private val _sortedForecastDisplayable =
-        MutableStateFlow<List<List<ForecastDisplayableModel>>?>(null)
-    val sortedForecastDisplayable = _sortedForecastDisplayable.asStateFlow()
-
+    private var sortedForecastDisplayable: List<List<ForecastDisplayableModel>>? = null
 
     // Forecast whole days displayable
     private var forecastWholeDaysDisplayable: List<ForecastWholeDayModel>? = null
-//    val forecastWholeDaysDisplayable = _forecastWholeDaysDisplayable.asStateFlow()
-
 
     private val _weatherApiStatus = MutableStateFlow<WeatherApiStatus>(WeatherApiStatus.DONE)
     val weatherApiStatus = _weatherApiStatus.asStateFlow()
@@ -234,10 +229,10 @@ class OpenWeatherRepository @Inject constructor(
                 if (_forecastWeatherResponse != null) {
                     if (!instead) { // Don't do this twice
                         // Setup displaying the data
-                        _forecastWeatherDisplayable = setupForecastDisplayable()
+                        forecastWeatherDisplayable = setupForecastDisplayable()
                         _weatherCity.value = setupCity()
-                        _sortedForecastDisplayable.value =
-                            separateByDate(_forecastWeatherDisplayable!!)
+                        sortedForecastDisplayable =
+                            separateByDate(forecastWeatherDisplayable!!)
                         setForecastWholeDays()
                         onCancelShowFocused() // Make sure we're not displaying focused view
                         _weatherApiStatus.value = WeatherApiStatus.DONE
@@ -268,9 +263,9 @@ class OpenWeatherRepository @Inject constructor(
                 fetchForecastWeatherFromDatabase()
                 // Setup displaying the data
                 if (_forecastWeatherResponse != null) {
-                    _forecastWeatherDisplayable = setupForecastDisplayable()
+                    forecastWeatherDisplayable = setupForecastDisplayable()
                     _weatherCity.value = setupCity()
-                    _sortedForecastDisplayable.value = separateByDate(_forecastWeatherDisplayable!!)
+                    sortedForecastDisplayable = separateByDate(forecastWeatherDisplayable!!)
                     setForecastWholeDays()
                     onCancelShowFocused() // Make sure we're not displaying focused view
                 }
@@ -316,9 +311,9 @@ class OpenWeatherRepository @Inject constructor(
         }
         if (_forecastWeatherResponse != null) {
             // Setup displaying the data
-            _forecastWeatherDisplayable = setupForecastDisplayable()
+            forecastWeatherDisplayable = setupForecastDisplayable()
             _weatherCity.value = setupCity()
-            _sortedForecastDisplayable.value = separateByDate(_forecastWeatherDisplayable!!)
+            sortedForecastDisplayable = separateByDate(forecastWeatherDisplayable!!)
             setForecastWholeDays()
             onCancelShowFocused() // Make sure we're not displaying focused view
             _weatherApiStatus.value = WeatherApiStatus.DONE
@@ -658,7 +653,7 @@ class OpenWeatherRepository @Inject constructor(
     // Set the whole day values
     private fun setForecastWholeDays() {
         val wholeDayList = mutableListOf<ForecastWholeDayModel>()
-        for (dayList in _sortedForecastDisplayable.value!!) {
+        for (dayList in sortedForecastDisplayable!!) {
             val dayCodes = mutableListOf<Int>()
             var dayCodePod = "d" // Track pod in case only night is present
             // Select that day's weather code (using daytime only)
@@ -870,7 +865,7 @@ class OpenWeatherRepository @Inject constructor(
     private fun setupPeriodDisplayable() {
 
         val dayPeriodsHolder = mutableListOf<ForecastPeriodModel>()
-        for (period in _sortedForecastDisplayable.value!![dayIndex]) {
+        for (period in sortedForecastDisplayable!![dayIndex]) {
             val bigSmall = determineFAndCAndString(period.temp, period.feelsLike)
             val gust = if (period.windGust != null) {
                 determineWindSpeedsAndString(period.windGust)
