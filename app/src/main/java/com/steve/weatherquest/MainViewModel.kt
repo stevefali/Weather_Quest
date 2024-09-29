@@ -6,6 +6,7 @@ import com.steve.weatherquest.data.IsoCodes
 import com.steve.weatherquest.data.LocationRepository
 import com.steve.weatherquest.data.PlayServicesAvailabilityChecker
 import com.steve.weatherquest.data.WeatherDatabaseDao
+import com.steve.weatherquest.models.ForecastPeriodModel
 import com.steve.weatherquest.models.HereAddress
 import com.steve.weatherquest.models.OpWeMaGeocodeResponseModel
 import com.steve.weatherquest.repository.AutoCompleteRepository
@@ -29,7 +30,6 @@ class MainViewModel @Inject constructor(
     dataStore: SettingsDataStoreRepository,
     weatherDao: WeatherDatabaseDao
 ) : ViewModel() {
-
 
 
     // Current location (Could be null)
@@ -56,6 +56,7 @@ class MainViewModel @Inject constructor(
     // Trigger for clearing searchbar focus
     private val _clearTrigger = MutableStateFlow(0)
     val clearTrigger = _clearTrigger.asStateFlow()
+
     // Trigger for focusing searchbar
     private val _focusTrigger = MutableStateFlow(0)
     val focusTrigger = _focusTrigger.asStateFlow()
@@ -70,6 +71,10 @@ class MainViewModel @Inject constructor(
 
     private val _isMenuShown = MutableStateFlow(false)
     val isMenuShown = _isMenuShown.asStateFlow()
+
+
+    private val _currentWeatherDisplayable = MutableStateFlow<ForecastPeriodModel?>(null)
+    val currentWeatherDisplayable = _currentWeatherDisplayable.asStateFlow()
 
     val myOpenWeatherRepository = openWeatherRepository
 
@@ -125,11 +130,10 @@ class MainViewModel @Inject constructor(
     // Show or hide the search view in the topAppBar
     fun showSearch(isShow: Boolean) {
         _isShowSearch.value = isShow
-       if (isShow) {
-           _focusTrigger.value++
-       }
+        if (isShow) {
+            _focusTrigger.value++
+        }
     }
-
 
 
     suspend fun setLocationFromDatabase() {
@@ -247,7 +251,7 @@ class MainViewModel @Inject constructor(
 
     private fun doTheOpenWeatherCurrentCall() {
         viewModelScope.launch {
-            myOpenWeatherRepository.callCurrentWeather(
+            _currentWeatherDisplayable.value = myOpenWeatherRepository.callCurrentWeather(
                 lat = _weatherLocation?.lat.toString(),
                 lon = _weatherLocation?.lon.toString(),
                 onError = { triggerSnackbar("Network Error. New weather data not available.") }

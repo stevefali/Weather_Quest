@@ -59,15 +59,12 @@ class OpenWeatherRepository @Inject constructor(
 
     // Current weather
     private var _currentWeatherResponse: OpenWeatherCurrentModel? = null
-    val currentWeatherResponse get() = _currentWeatherResponse
 
     // Forecast weather
     private var _forecastWeatherResponse: OpenWeatherForecastModel? = null
-    val forecastWeatherResponse get() = _forecastWeatherResponse
 
-    // Current weather displayable
-    private val _currentWeatherDisplayable = MutableStateFlow<ForecastPeriodModel?>(null)
-    val currentWeatherDisplayable = _currentWeatherDisplayable.asStateFlow()
+    private var currentWeatherDisplayable: ForecastPeriodModel? = null
+
 
     // Forecast weather displayable
     private var _forecastWeatherDisplayable: List<ForecastDisplayableModel>? = null
@@ -125,11 +122,17 @@ class OpenWeatherRepository @Inject constructor(
     }
 
 
-    suspend fun callCurrentWeather(lat: String, lon: String, onError: () -> Unit) {
+    suspend fun callCurrentWeather(
+        lat: String,
+        lon: String,
+        onError: () -> Unit
+    ): ForecastPeriodModel? {
+
         withContext(Dispatchers.IO) {
             Log.d(TAG, "Current weather network called")
 
             _weatherApiStatus.value = WeatherApiStatus.LOADING
+
 
             var instead = false
             var fetchNewData = false
@@ -163,10 +166,11 @@ class OpenWeatherRepository @Inject constructor(
                     fetchCurrentWeatherFromDatabase()
                 }
 
+
                 if (_currentWeatherResponse != null) {
                     if (!instead) { // Don't do this twice
                         // Setup display data
-                        setupCurrentDisplayable()
+                        setCurrentDisplayable()
                         _weatherApiStatus.value = WeatherApiStatus.DONE
 
                         // Write the new data to the database
@@ -188,12 +192,13 @@ class OpenWeatherRepository @Inject constructor(
                 fetchCurrentWeatherFromDatabase()
                 if (_currentWeatherResponse != null) {
                     // Setup display data
-                    setupCurrentDisplayable()
+                    setCurrentDisplayable()
                 }
                 _weatherApiStatus.value = WeatherApiStatus.DONE
             }
             isNewCurrentQuery = false // Reset isNewQuery
         }
+        return currentWeatherDisplayable
     }
 
     suspend fun callForecastWeather(lat: String, lon: String, onError: () -> Unit) {
@@ -298,7 +303,7 @@ class OpenWeatherRepository @Inject constructor(
         }
         if (_currentWeatherResponse != null) {
             // Setup display data
-            setupCurrentDisplayable()
+            setCurrentDisplayable()
             _weatherApiStatus.value = WeatherApiStatus.DONE
         }
     }
@@ -632,7 +637,7 @@ class OpenWeatherRepository @Inject constructor(
 
     private fun selectBackground(weatherCode: Int): Int {
         @DrawableRes val backResId =
-            when(weatherCode) {
+            when (weatherCode) {
                 in 200..232 -> R.drawable.lightning
                 in 300..531 -> R.drawable.rainy
                 in 600..622 -> R.drawable.snowfall_201496
@@ -870,7 +875,7 @@ class OpenWeatherRepository @Inject constructor(
         isMetric = newIsMetric
         // Renew the whole List
         setupForecastWholeDays()
-        setupCurrentDisplayable()
+        setCurrentDisplayable()
         setupPeriodDisplayable()
     }
 
@@ -929,7 +934,7 @@ class OpenWeatherRepository @Inject constructor(
         _focusedForecastDay.value = dayPeriodsHolder
     }
 
-    private fun setupCurrentDisplayable() {
+    private fun setCurrentDisplayable() {
         val currentWeatherDate =
             Date((_currentWeatherResponse!!.dt!! + _currentWeatherResponse!!.timezone!!) * 1000L)
         val bigSmall = determineFAndCAndString(
@@ -957,7 +962,7 @@ class OpenWeatherRepository @Inject constructor(
         val back = selectBackground(_currentWeatherResponse!!.weather!![0]!!.id!!)
         determineUnitSymbols()
 
-        _currentWeatherDisplayable.value = ForecastPeriodModel(
+        currentWeatherDisplayable = ForecastPeriodModel(
             dayIndex = 0, // Arbitrarily set to zero since it's not needed here
             time = setupDateFormat(TIME_SKELETON).format(currentWeatherDate),
             date = setupDateFormat(DATE_SKELETON).format(currentWeatherDate),
@@ -985,7 +990,6 @@ class OpenWeatherRepository @Inject constructor(
             name = _currentWeatherResponse!!.name,
             background = back
         )
-
     }
 
     private fun determineCurrentPod(): String {

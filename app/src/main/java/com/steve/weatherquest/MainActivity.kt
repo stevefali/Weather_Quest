@@ -56,7 +56,8 @@ import javax.inject.Inject
 
 private val TAG = "MainActivity"
 
-private const val PRIVACY_POLICY_ADDRESS = "https://doc-hosting.flycricket.io/weather-quest-privacy-policy/06ec81c4-b2a6-459e-bce7-a6f9fe9bd35a/privacy"
+private const val PRIVACY_POLICY_ADDRESS =
+    "https://doc-hosting.flycricket.io/weather-quest-privacy-policy/06ec81c4-b2a6-459e-bce7-a6f9fe9bd35a/privacy"
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -204,11 +205,10 @@ fun LocationTestDisplay(
 fun WeatherDisplay(
     locationPermissionState: LocationPermissionState,
     viewModel: MainViewModel,
-    // goToPolicy: () -> Unit
 ) {
 
     // Weather
-    val currentWeather by viewModel.myOpenWeatherRepository.currentWeatherDisplayable.collectAsState()
+    val currentWeather by viewModel.currentWeatherDisplayable.collectAsState()
     val wholeDayForecast by viewModel.myOpenWeatherRepository.forecastWholeDaysDisplayable.collectAsState()
     val weatherCity by viewModel.myOpenWeatherRepository.weatherCity.collectAsState()
     val focusedForecast by viewModel.myOpenWeatherRepository.focusedForecastDay.collectAsState()
