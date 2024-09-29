@@ -129,16 +129,13 @@ class OpenWeatherRepository @Inject constructor(
     ): ForecastPeriodModel? {
 
         withContext(Dispatchers.IO) {
-            Log.d(TAG, "Current weather network called")
 
             _weatherApiStatus.value = WeatherApiStatus.LOADING
-
 
             var instead = false
             var fetchNewData = false
 
             if (databaseDao.getCurrentDatabaseDate() == null) { // Database empty?
-                Log.d(TAG, "Current Weather database returned null!")
                 fetchNewData = true
             } else if (isNewCurrentQuery) { // Is this just a refresh or a new query?
                 fetchNewData = true
@@ -146,7 +143,6 @@ class OpenWeatherRepository @Inject constructor(
                 fetchNewData = true
             }
             if (fetchNewData) { // Get fresh data from the network
-                Log.d(TAG, "Fetching new currentWeather data from network")
                 try {
                     _currentWeatherResponse =
                         OpenWeatherMapApi.retrofitService.getCurrentWeatherResponse(
@@ -159,7 +155,6 @@ class OpenWeatherRepository @Inject constructor(
                     _weatherApiStatus.value = WeatherApiStatus.ERROR
                     Log.d(TAG, "Error in current weather network call!")
                     e.printStackTrace()
-                    // Snackbar notifying of network error
                     onError()
                     // Fetch from database instead
                     instead = true
@@ -177,7 +172,6 @@ class OpenWeatherRepository @Inject constructor(
 
                         // Clear the old data from the database first
                         databaseDao.clearCurrentWeatherDatabase()
-                        Log.d(TAG, "Clear current database called")
                         // Convert the network data to database data
                         val databaseCurrent =
                             CoroutineScope(Dispatchers.Default).async {
@@ -185,7 +179,6 @@ class OpenWeatherRepository @Inject constructor(
                             }.await()
                         // Insert the new data
                         databaseDao.insertCurrentWeather(databaseCurrent)
-                        Log.d(TAG, "Insert current weather to database called")
                     }
                 }
             } else { // Use the data in the database
@@ -203,14 +196,12 @@ class OpenWeatherRepository @Inject constructor(
 
     suspend fun callForecastWeather(lat: String, lon: String, onError: () -> Unit) {
         withContext(Dispatchers.IO) {
-            Log.d(TAG, "Weather forecast network called")
             _weatherApiStatus.value = WeatherApiStatus.LOADING
 
             var instead = false
             var fetchNewData = false
 
             if (databaseDao.getSoonestForecastDate() == null) { // Database empty?
-                Log.d(TAG, "Forecast Weather database returned null!")
                 fetchNewData = true
             } else if (isNewForecastQuery) { // Is this just a refresh or a new query?
                 fetchNewData = true
@@ -218,7 +209,6 @@ class OpenWeatherRepository @Inject constructor(
                 fetchNewData = true
             }
             if (fetchNewData) { // Get new data from the network
-                Log.d(TAG, "Fetching new Forecast data from the network")
                 try {
                     _forecastWeatherResponse =
                         OpenWeatherMapApi.retrofitService.getFiveDayForecastResponse(
@@ -231,7 +221,6 @@ class OpenWeatherRepository @Inject constructor(
                     _weatherApiStatus.value = WeatherApiStatus.ERROR
                     Log.d(TAG, "Error in forecast weather network call!")
                     e.printStackTrace()
-                    // Snackbar notifying of network error
                     onError()
                     // Fetch from database instead
                     instead = true
@@ -250,10 +239,8 @@ class OpenWeatherRepository @Inject constructor(
                         // Write the new data to the database
                         // First, clear the old data from the Forecast database
                         databaseDao.clearForecastDatabase()
-                        Log.d(TAG, "Clear forecast database called")
                         // Clear the old data from the City database
                         databaseDao.clearCityDatabase()
-                        Log.d(TAG, "Clear city database called")
 
                         // Convert the city network data to database data
                         val databaseCity = CoroutineScope(Dispatchers.Default).async {
@@ -261,7 +248,6 @@ class OpenWeatherRepository @Inject constructor(
                         }.await()
                         // Insert the City item into the database
                         databaseDao.insertCity(databaseCity)
-                        Log.d(TAG, "Insert city database called")
 
                         // Convert the network forecast data to database data
                         val databaseForecast = CoroutineScope(Dispatchers.Default).async {
@@ -271,7 +257,6 @@ class OpenWeatherRepository @Inject constructor(
                         for (databasePeriod in databaseForecast) {
                             databaseDao.insertForecast(databasePeriod)
                         }
-                        Log.d(TAG, "Insert all the forecast data called")
                     }
                 }
             } else { // Use the data in the database
@@ -294,7 +279,6 @@ class OpenWeatherRepository @Inject constructor(
         _weatherApiStatus.value = WeatherApiStatus.LOADING
         // Get the data from the database
         val fromDatabaseCurrent = databaseDao.getCurrentWeatherDatabaseData()
-        Log.d(TAG, "Fetching current weather data from database")
         // Convert the database data to network-style data
         if (fromDatabaseCurrent != null) {
             _currentWeatherResponse = CoroutineScope(Dispatchers.Default).async {
@@ -313,7 +297,6 @@ class OpenWeatherRepository @Inject constructor(
         // Get the data from the database
         val databaseCity = databaseDao.getCityDatabaseData()
         val databaseForecastList = databaseDao.getForecastDatabaseData()
-        Log.d(TAG, "Fetching city and forecast data from the database")
 
         // Convert the database city to network-style city so we can use it
         if (databaseCity != null) {
@@ -822,10 +805,8 @@ class OpenWeatherRepository @Inject constructor(
 
     private fun determineWindSpeedsAndString(networkWind: Double): String {
         val windMph = (networkWind / 1.609).trimToTwoDecimals()
-        // val gustMph = (networkGust / 1.609).trimToTwoDecimals()
 
         val windKm = networkWind.trimToTwoDecimals()
-        //  val gustKm = networkGust.trimToTwoDecimals()
         return if (isMetric) {
             windKm
         } else {
