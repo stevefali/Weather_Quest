@@ -289,6 +289,7 @@ class MainViewModel @Inject constructor(
     fun switchMetric() {
         myOpenWeatherRepository.switchUnits(!metric)
         setIsMetric(!metric)
+        updateBothWeathers(false)
     }
 
 
