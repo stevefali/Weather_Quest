@@ -74,9 +74,6 @@ class OpenWeatherRepository @Inject constructor(
     // Forecast whole days displayable
     private var forecastWholeDaysDisplayable: List<ForecastWholeDayModel>? = null
 
-    private val _weatherApiStatus = MutableStateFlow<WeatherApiStatus>(WeatherApiStatus.DONE)
-    val weatherApiStatus = _weatherApiStatus.asStateFlow()
-
     private var focusedForecastDay: List<ForecastPeriodModel>? = null
 
     // Boolean to tell us if the refresh call was triggered by the user entering a new location
@@ -100,12 +97,13 @@ class OpenWeatherRepository @Inject constructor(
     suspend fun callCurrentWeather(
         lat: String,
         lon: String,
-        onError: () -> Unit
+        onError: () -> Unit,
+        setStatus: (WeatherApiStatus) -> Unit
     ): ForecastPeriodModel? {
 
         withContext(Dispatchers.IO) {
 
-            _weatherApiStatus.value = WeatherApiStatus.LOADING
+            setStatus(WeatherApiStatus.LOADING)
 
             var instead = false
             var fetchNewData = false
@@ -127,13 +125,13 @@ class OpenWeatherRepository @Inject constructor(
                             appid = APIKEY
                         )
                 } catch (e: Exception) {
-                    _weatherApiStatus.value = WeatherApiStatus.ERROR
+                    setStatus(WeatherApiStatus.ERROR)
                     Log.d(TAG, "Error in current weather network call!")
                     e.printStackTrace()
                     onError()
                     // Fetch from database instead
                     instead = true
-                    fetchCurrentWeatherFromDatabase()
+                    fetchCurrentWeatherFromDatabase { setStatus(it) }
                 }
 
 
@@ -141,9 +139,7 @@ class OpenWeatherRepository @Inject constructor(
                     if (!instead) { // Don't do this twice
                         // Setup display data
                         setCurrentDisplayable()
-                        _weatherApiStatus.value = WeatherApiStatus.DONE
-
-                        // Write the new data to the database
+                        setStatus(WeatherApiStatus.DONE)
 
                         // Clear the old data from the database first
                         databaseDao.clearCurrentWeatherDatabase()
@@ -157,12 +153,12 @@ class OpenWeatherRepository @Inject constructor(
                     }
                 }
             } else { // Use the data in the database
-                fetchCurrentWeatherFromDatabase()
+                fetchCurrentWeatherFromDatabase { setStatus(it) }
                 if (_currentWeatherResponse != null) {
                     // Setup display data
                     setCurrentDisplayable()
                 }
-                _weatherApiStatus.value = WeatherApiStatus.DONE
+                setStatus(WeatherApiStatus.DONE)
             }
             isNewCurrentQuery = false // Reset isNewQuery
         }
@@ -173,10 +169,11 @@ class OpenWeatherRepository @Inject constructor(
         lat: String,
         lon: String,
         onError: () -> Unit,
-        onCancelShowFocused: () -> Unit
+        onCancelShowFocused: () -> Unit,
+        setStatus: (WeatherApiStatus) -> Unit
     ): List<ForecastWholeDayModel>? {
         withContext(Dispatchers.IO) {
-            _weatherApiStatus.value = WeatherApiStatus.LOADING
+            setStatus(WeatherApiStatus.LOADING)
 
             var instead = false
             var fetchNewData = false
@@ -198,13 +195,13 @@ class OpenWeatherRepository @Inject constructor(
                             appid = APIKEY
                         )
                 } catch (e: Exception) {
-                    _weatherApiStatus.value = WeatherApiStatus.ERROR
+                    setStatus(WeatherApiStatus.ERROR)
                     Log.d(TAG, "Error in forecast weather network call!")
                     e.printStackTrace()
                     onError()
                     // Fetch from database instead
                     instead = true
-                    fetchForecastWeatherFromDatabase()
+                    fetchForecastWeatherFromDatabase { setStatus(it) }
                 }
                 if (_forecastWeatherResponse != null) {
                     if (!instead) { // Don't do this twice
@@ -214,7 +211,7 @@ class OpenWeatherRepository @Inject constructor(
                             separateByDate(forecastWeatherDisplayable!!)
                         setForecastWholeDays()
                         onCancelShowFocused() // Make sure we're not displaying focused view
-                        _weatherApiStatus.value = WeatherApiStatus.DONE
+                        setStatus(WeatherApiStatus.DONE)
                         // Write the new data to the database
                         // First, clear the old data from the Forecast database
                         databaseDao.clearForecastDatabase()
@@ -239,7 +236,7 @@ class OpenWeatherRepository @Inject constructor(
                     }
                 }
             } else { // Use the data in the database
-                fetchForecastWeatherFromDatabase()
+                fetchForecastWeatherFromDatabase { setStatus(it) }
                 // Setup displaying the data
                 if (_forecastWeatherResponse != null) {
                     forecastWeatherDisplayable = setupForecastDisplayable()
@@ -247,15 +244,15 @@ class OpenWeatherRepository @Inject constructor(
                     setForecastWholeDays()
                     onCancelShowFocused() // Make sure we're not displaying focused view
                 }
-                _weatherApiStatus.value = WeatherApiStatus.DONE
+                setStatus(WeatherApiStatus.DONE)
             }
             isNewForecastQuery = false // Reset isNewQuery
         }
         return forecastWholeDaysDisplayable
     }
 
-    suspend fun fetchCurrentWeatherFromDatabase() {
-        _weatherApiStatus.value = WeatherApiStatus.LOADING
+    private suspend fun fetchCurrentWeatherFromDatabase(setStatus: (WeatherApiStatus) -> Unit) {
+        setStatus(WeatherApiStatus.LOADING)
         // Get the data from the database
         val fromDatabaseCurrent = databaseDao.getCurrentWeatherDatabaseData()
         // Convert the database data to network-style data
@@ -267,12 +264,12 @@ class OpenWeatherRepository @Inject constructor(
         if (_currentWeatherResponse != null) {
             // Setup display data
             setCurrentDisplayable()
-            _weatherApiStatus.value = WeatherApiStatus.DONE
+            setStatus(WeatherApiStatus.DONE)
         }
     }
 
-    suspend fun fetchForecastWeatherFromDatabase() {
-        _weatherApiStatus.value = WeatherApiStatus.LOADING
+    private suspend fun fetchForecastWeatherFromDatabase(setStatus: (WeatherApiStatus) -> Unit) {
+        setStatus(WeatherApiStatus.LOADING)
         // Get the data from the database
         val databaseCity = databaseDao.getCityDatabaseData()
         val databaseForecastList = databaseDao.getForecastDatabaseData()
@@ -292,8 +289,7 @@ class OpenWeatherRepository @Inject constructor(
             forecastWeatherDisplayable = setupForecastDisplayable()
             sortedForecastDisplayable = separateByDate(forecastWeatherDisplayable!!)
             setForecastWholeDays()
-//            onCancelShowFocused() // Make sure we're not displaying focused view
-            _weatherApiStatus.value = WeatherApiStatus.DONE
+            setStatus(WeatherApiStatus.DONE)
         }
     }
 

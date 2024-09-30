@@ -14,6 +14,7 @@ import com.steve.weatherquest.repository.AutoCompleteRepository
 import com.steve.weatherquest.repository.OpWeMaGeocodeRepository
 import com.steve.weatherquest.repository.OpenWeatherRepository
 import com.steve.weatherquest.repository.SettingsDataStoreRepository
+import com.steve.weatherquest.repository.WeatherApiStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -80,18 +81,17 @@ class MainViewModel @Inject constructor(
     val forecastWholeDaysDisplayable = _forecastWholeDaysDisplayable.asStateFlow()
 
 
-
     private val _showingForecastFocused = MutableStateFlow(false)
     val showingForecastFocused = _showingForecastFocused.asStateFlow()
 
     private val _focusedForecastDay = MutableStateFlow<List<ForecastPeriodModel>?>(null)
     val focusedForecastDay = _focusedForecastDay.asStateFlow()
 
+    private val _weatherApiStatus = MutableStateFlow(WeatherApiStatus.DONE)
+    val weatherApiStatus = _weatherApiStatus.asStateFlow()
 
 
     private val myOpenWeatherRepository = openWeatherRepository
-
-    val weatherApiStatus = openWeatherRepository.weatherApiStatus
 
     private val myDataStore = dataStore
 
@@ -140,11 +140,11 @@ class MainViewModel @Inject constructor(
         _isShowSnackbar.value = false
     }
 
-    // Store the index here so we can use it without having to hoist it up again
-//    private var dayIndex = 0
+    private fun setWeatherApiStatus(status: WeatherApiStatus) {
+        _weatherApiStatus.value = status
+    }
 
     fun onForecastDayClicked(index: Int) {
-//        dayIndex = index
         _focusedForecastDay.value = myOpenWeatherRepository.setupPeriodDisplayable(index)
         _showingForecastFocused.value = true
     }
@@ -280,7 +280,8 @@ class MainViewModel @Inject constructor(
             _currentWeatherDisplayable.value = myOpenWeatherRepository.callCurrentWeather(
                 lat = _weatherLocation?.lat.toString(),
                 lon = _weatherLocation?.lon.toString(),
-                onError = { triggerSnackbar("Network Error. New weather data not available.") }
+                onError = { triggerSnackbar("Network Error. New weather data not available.") },
+                setStatus = { setWeatherApiStatus(it) }
             )
         }
     }
@@ -291,7 +292,8 @@ class MainViewModel @Inject constructor(
                 lat = _weatherLocation?.lat.toString(),
                 lon = _weatherLocation?.lon.toString(),
                 onError = { triggerSnackbar("Network Error. New weather data not available.") },
-                onCancelShowFocused = { onCancelShowFocused() }
+                onCancelShowFocused = { onCancelShowFocused() },
+                setStatus = { setWeatherApiStatus(it) }
             )
         }
     }
