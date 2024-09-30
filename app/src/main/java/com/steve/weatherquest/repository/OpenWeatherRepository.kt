@@ -26,7 +26,6 @@ import com.steve.weatherquest.models.Precip
 import com.steve.weatherquest.models.Precipitation
 import com.steve.weatherquest.models.Sys
 import com.steve.weatherquest.models.Weather
-import com.steve.weatherquest.models.WeatherCity
 import com.steve.weatherquest.models.Wind
 import com.steve.weatherquest.network.OpenWeatherMapApi
 import com.steve.weatherquest.util.trimToTwoDecimals
@@ -78,10 +77,6 @@ class OpenWeatherRepository @Inject constructor(
     private val _weatherApiStatus = MutableStateFlow<WeatherApiStatus>(WeatherApiStatus.DONE)
     val weatherApiStatus = _weatherApiStatus.asStateFlow()
 
-
-    // City info
-    private val _weatherCity = MutableStateFlow<WeatherCity?>(null)
-    val weatherCity = _weatherCity.asStateFlow()
 
     private val _showingForecastFocused = MutableStateFlow(false)
     val showingForecastFocused = _showingForecastFocused.asStateFlow()
@@ -230,7 +225,6 @@ class OpenWeatherRepository @Inject constructor(
                     if (!instead) { // Don't do this twice
                         // Setup displaying the data
                         forecastWeatherDisplayable = setupForecastDisplayable()
-                        _weatherCity.value = setupCity()
                         sortedForecastDisplayable =
                             separateByDate(forecastWeatherDisplayable!!)
                         setForecastWholeDays()
@@ -264,7 +258,6 @@ class OpenWeatherRepository @Inject constructor(
                 // Setup displaying the data
                 if (_forecastWeatherResponse != null) {
                     forecastWeatherDisplayable = setupForecastDisplayable()
-                    _weatherCity.value = setupCity()
                     sortedForecastDisplayable = separateByDate(forecastWeatherDisplayable!!)
                     setForecastWholeDays()
                     onCancelShowFocused() // Make sure we're not displaying focused view
@@ -312,7 +305,6 @@ class OpenWeatherRepository @Inject constructor(
         if (_forecastWeatherResponse != null) {
             // Setup displaying the data
             forecastWeatherDisplayable = setupForecastDisplayable()
-            _weatherCity.value = setupCity()
             sortedForecastDisplayable = separateByDate(forecastWeatherDisplayable!!)
             setForecastWholeDays()
             onCancelShowFocused() // Make sure we're not displaying focused view
@@ -557,16 +549,6 @@ class OpenWeatherRepository @Inject constructor(
             )
         }
         return displayables
-    }
-
-    // Return the city data
-    private fun setupCity(): WeatherCity {
-        return WeatherCity(
-            name = _forecastWeatherResponse!!.city!!.name,
-            timezone = _forecastWeatherResponse!!.city!!.timezone,
-            sunrise = _forecastWeatherResponse!!.city!!.sunrise!!,
-            sunset = _forecastWeatherResponse!!.city!!.sunset!!
-        )
     }
 
 

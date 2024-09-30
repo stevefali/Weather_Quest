@@ -15,7 +15,6 @@ import com.steve.weatherquest.repository.OpWeMaGeocodeRepository
 import com.steve.weatherquest.repository.OpenWeatherRepository
 import com.steve.weatherquest.repository.SettingsDataStoreRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hilt_aggregated_deps._dagger_hilt_android_internal_lifecycle_DefaultViewModelFactories_FragmentEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -62,7 +61,7 @@ class MainViewModel @Inject constructor(
     private val _focusTrigger = MutableStateFlow(0)
     val focusTrigger = _focusTrigger.asStateFlow()
 
-    val myGeocodeRepository = geocodeRepository
+    private val myGeocodeRepository = geocodeRepository
 
     private val _isShowSearch = MutableStateFlow(false)
     val isShowSearch = _isShowSearch.asStateFlow()
@@ -84,7 +83,7 @@ class MainViewModel @Inject constructor(
 
     val weatherApiStatus = openWeatherRepository.weatherApiStatus
 
-    val myDataStore = dataStore
+    private val myDataStore = dataStore
 
     private val myWeatherDao = weatherDao
 
@@ -140,7 +139,7 @@ class MainViewModel @Inject constructor(
     }
 
 
-    suspend fun setLocationFromDatabase() {
+    private suspend fun setLocationFromDatabase() {
         withContext(Dispatchers.IO) {
             _weatherLocation = myWeatherDao.getGeocodeDatabaseData()
         }
@@ -229,7 +228,7 @@ class MainViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, PlayServicesAvailableState.Initializing)
 
 
-    fun doTheAutoCompleteNetworkCall() {
+    private fun doTheAutoCompleteNetworkCall() {
         viewModelScope.launch {
             myAutoCompleteRepository.callAutoComplete(_searchedLocation.value,
                 onError = {
@@ -294,7 +293,7 @@ class MainViewModel @Inject constructor(
     }
 
 
-    fun setIsMetric(metric: Boolean) {
+    private fun setIsMetric(metric: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             myDataStore.saveIsMetric(metric)
         }
@@ -307,7 +306,3 @@ enum class PlayServicesAvailableState {
     Initializing, PlayServicesUnavailable, PlayServicesAvailable
 }
 
-data class Coordinates(
-    val lon: Double,
-    val lat: Double
-)

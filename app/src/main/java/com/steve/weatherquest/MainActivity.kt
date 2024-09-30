@@ -210,7 +210,6 @@ fun WeatherDisplay(
     // Weather
     val currentWeather by viewModel.currentWeatherDisplayable.collectAsState()
     val wholeDayForecast by viewModel.forecastWholeDaysDisplayable.collectAsState()
-    val weatherCity by viewModel.myOpenWeatherRepository.weatherCity.collectAsState()
     val focusedForecast by viewModel.myOpenWeatherRepository.focusedForecastDay.collectAsState()
     val weatherApiStatus by viewModel.weatherApiStatus.collectAsState()
     // AutoComplete
