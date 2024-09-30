@@ -853,12 +853,16 @@ class OpenWeatherRepository @Inject constructor(
         }
     }
 
-    fun switchUnits(newIsMetric: Boolean) {
+    fun switchUnits(newIsMetric: Boolean): AllWeathersDisplayable {
         isMetric = newIsMetric
         // Renew the whole List
         setForecastWholeDays()
         setCurrentDisplayable()
         setupPeriodDisplayable()
+        return AllWeathersDisplayable(
+            current = currentWeatherDisplayable,
+            forecastWholeDays = forecastWholeDaysDisplayable
+        )
     }
 
 

@@ -287,9 +287,10 @@ class MainViewModel @Inject constructor(
 
 
     fun switchMetric() {
-        myOpenWeatherRepository.switchUnits(!metric)
+        val allWeathersDisplayable = myOpenWeatherRepository.switchUnits(!metric)
+        _currentWeatherDisplayable.value = allWeathersDisplayable.current
+        _forecastWholeDaysDisplayable.value = allWeathersDisplayable.forecastWholeDays
         setIsMetric(!metric)
-        updateBothWeathers(false)
     }
 
 
