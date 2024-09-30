@@ -79,7 +79,17 @@ class MainViewModel @Inject constructor(
     private var _forecastWholeDaysDisplayable = MutableStateFlow<List<ForecastWholeDayModel>?>(null)
     val forecastWholeDaysDisplayable = _forecastWholeDaysDisplayable.asStateFlow()
 
-    val myOpenWeatherRepository = openWeatherRepository
+
+
+    private val _showingForecastFocused = MutableStateFlow(false)
+    val showingForecastFocused = _showingForecastFocused.asStateFlow()
+
+    private val _focusedForecastDay = MutableStateFlow<List<ForecastPeriodModel>?>(null)
+    val focusedForecastDay = _focusedForecastDay.asStateFlow()
+
+
+
+    private val myOpenWeatherRepository = openWeatherRepository
 
     val weatherApiStatus = openWeatherRepository.weatherApiStatus
 
@@ -128,6 +138,19 @@ class MainViewModel @Inject constructor(
     // Called once the snackbar has displayed
     fun snackBarDone() {
         _isShowSnackbar.value = false
+    }
+
+    // Store the index here so we can use it without having to hoist it up again
+//    private var dayIndex = 0
+
+    fun onForecastDayClicked(index: Int) {
+//        dayIndex = index
+        _focusedForecastDay.value = myOpenWeatherRepository.setupPeriodDisplayable(index)
+        _showingForecastFocused.value = true
+    }
+
+    fun onCancelShowFocused() {
+        _showingForecastFocused.value = false
     }
 
     // Show or hide the search view in the topAppBar
@@ -267,7 +290,8 @@ class MainViewModel @Inject constructor(
             _forecastWholeDaysDisplayable.value = myOpenWeatherRepository.callForecastWeather(
                 lat = _weatherLocation?.lat.toString(),
                 lon = _weatherLocation?.lon.toString(),
-                onError = { triggerSnackbar("Network Error. New weather data not available.") }
+                onError = { triggerSnackbar("Network Error. New weather data not available.") },
+                onCancelShowFocused = { onCancelShowFocused() }
             )
         }
     }
@@ -289,6 +313,7 @@ class MainViewModel @Inject constructor(
         val allWeathersDisplayable = myOpenWeatherRepository.switchUnits(!metric)
         _currentWeatherDisplayable.value = allWeathersDisplayable.current
         _forecastWholeDaysDisplayable.value = allWeathersDisplayable.forecastWholeDays
+        _focusedForecastDay.value = allWeathersDisplayable.forecastFocused
         setIsMetric(!metric)
     }
 

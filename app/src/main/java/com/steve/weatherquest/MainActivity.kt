@@ -210,13 +210,13 @@ fun WeatherDisplay(
     // Weather
     val currentWeather by viewModel.currentWeatherDisplayable.collectAsState()
     val wholeDayForecast by viewModel.forecastWholeDaysDisplayable.collectAsState()
-    val focusedForecast by viewModel.myOpenWeatherRepository.focusedForecastDay.collectAsState()
+    val focusedForecast by viewModel.focusedForecastDay.collectAsState()
     val weatherApiStatus by viewModel.weatherApiStatus.collectAsState()
     // AutoComplete
     val searchedText by viewModel.searchedLocation.collectAsState()
     val suggestions by viewModel.myAutoCompleteRepository.suggestions.collectAsState()
 
-    val showingFocused by viewModel.myOpenWeatherRepository.showingForecastFocused.collectAsState()
+    val showingFocused by viewModel.showingForecastFocused.collectAsState()
 
     // SearchBar
     val clearTrigger by viewModel.clearTrigger.collectAsState()
@@ -302,8 +302,8 @@ fun WeatherDisplay(
                 switchUnits = { viewModel.switchMetric() },
                 isShowingFocused = showingFocused,
                 forecastDayFocused = focusedForecast,
-                onCancelFocus = { viewModel.myOpenWeatherRepository.onCancelShowFocused() },
-                onDayClicked = { viewModel.myOpenWeatherRepository.onForecastDayClicked(it) },
+                onCancelFocus = { viewModel.onCancelShowFocused() },
+                onDayClicked = { viewModel.onForecastDayClicked(it) },
                 wideness = width,
                 tallness = height,
                 isLocationLoading = isLocationLoading,
