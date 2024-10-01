@@ -1,6 +1,7 @@
 package com.steve.weatherquest
 
 import android.util.Log
+import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.*
 import com.steve.weatherquest.data.IsoCodes
 import com.steve.weatherquest.data.LocationRepository
@@ -90,6 +91,10 @@ class MainViewModel @Inject constructor(
     private val _weatherApiStatus = MutableStateFlow(WeatherApiStatus.DONE)
     val weatherApiStatus = _weatherApiStatus.asStateFlow()
 
+    // The list of location suggestions from searching in the searchbar
+    private val _suggestions = MutableStateFlow<List<AnnotatedString>>(listOf())
+    val suggestions = _suggestions.asStateFlow()
+
 
     private val myOpenWeatherRepository = openWeatherRepository
 
@@ -161,6 +166,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun clearSuggestions() {
+        _suggestions.value = listOf()
+    }
+
 
     private suspend fun setLocationFromDatabase() {
         withContext(Dispatchers.IO) {
@@ -178,7 +187,7 @@ class MainViewModel @Inject constructor(
             doTheAutoCompleteNetworkCall()
         } else {
             // Clear suggestions if the user backspaces the search below 3 characters
-            myAutoCompleteRepository.clearSuggestions()
+            clearSuggestions()
         }
     }
 
@@ -192,7 +201,7 @@ class MainViewModel @Inject constructor(
         geocodeableLocation = makeGeocodeString(selectedResponse)
         doTheGeocodeNetworkCall()
         Log.d("SuggestionClicked", geocodeableLocation)
-        myAutoCompleteRepository.clearSuggestions()
+        clearSuggestions()
         _searchedLocation.value = ""
         _clearTrigger.value++
     }
@@ -253,10 +262,10 @@ class MainViewModel @Inject constructor(
 
     private fun doTheAutoCompleteNetworkCall() {
         viewModelScope.launch {
-            myAutoCompleteRepository.callAutoComplete(_searchedLocation.value,
+            _suggestions.value = myAutoCompleteRepository.callAutoComplete(_searchedLocation.value,
                 onError = {
                     triggerSnackbar("Network Error")
-                    myAutoCompleteRepository.clearSuggestions()
+                    clearSuggestions()
                     myAutoCompleteRepository.clearResponse()
                 })
 

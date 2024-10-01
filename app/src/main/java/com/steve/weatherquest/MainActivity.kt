@@ -214,7 +214,7 @@ fun WeatherDisplay(
     val weatherApiStatus by viewModel.weatherApiStatus.collectAsState()
     // AutoComplete
     val searchedText by viewModel.searchedLocation.collectAsState()
-    val suggestions by viewModel.myAutoCompleteRepository.suggestions.collectAsState()
+    val suggestions by viewModel.suggestions.collectAsState()
 
     val showingFocused by viewModel.showingForecastFocused.collectAsState()
 

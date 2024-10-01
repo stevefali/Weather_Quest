@@ -30,8 +30,6 @@ import com.steve.weatherquest.models.Wind
 import com.steve.weatherquest.network.OpenWeatherMapApi
 import com.steve.weatherquest.util.trimToTwoDecimals
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject

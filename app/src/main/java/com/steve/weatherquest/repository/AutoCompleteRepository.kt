@@ -11,8 +11,6 @@ import com.steve.weatherquest.models.AutoCompleteResponseModel
 import com.steve.weatherquest.network.HereAutoCompleteApi
 import com.steve.weatherquest.ui.theme.TextOnHighlightDarkTheme
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Singleton
 
@@ -30,16 +28,11 @@ class AutoCompleteRepository {
     )
     private val type = "city"
 
-    // Response from the network
     private var _autoCompleteResponse: AutoCompleteResponseModel? = null
     val autoCompleteResponse get() = _autoCompleteResponse
 
-    // The list of location suggestions from searching in the searchbar
-    private val _suggestions = MutableStateFlow<List<AnnotatedString>>(listOf())
-    val suggestions = _suggestions.asStateFlow()
 
-
-    suspend fun callAutoComplete(qry: String, onError: () -> Unit) {
+    suspend fun callAutoComplete(qry: String, onError: () -> Unit): List<AnnotatedString> {
         withContext(Dispatchers.IO) {
             try {
                 _autoCompleteResponse =
@@ -51,10 +44,10 @@ class AutoCompleteRepository {
             } catch (e: Exception) {
                 Log.d(TAG, "Error in autoComplete network call!")
                 e.printStackTrace()
-                onError() // Trigger a toast message and clear the response to avoid weird behavior
+                onError()
             }
-            _suggestions.value = giveAutoCompleteResponseList()
         }
+        return giveAutoCompleteResponseList()
     }
 
 
@@ -80,13 +73,8 @@ class AutoCompleteRepository {
             }
             return annotatedTitles
         } else {
-            // If there's nothing then return an empty list
             return listOf()
         }
-    }
-
-    fun clearSuggestions() {
-        _suggestions.value = listOf()
     }
 
     fun clearResponse() {
