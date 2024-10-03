@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.IntentSender
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.steve.weatherquest.data.LocationRepository
-import com.steve.weatherquest.ui.*
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -45,10 +43,7 @@ import com.google.android.gms.tasks.Task
 import com.steve.weatherquest.location.LocationPermissionState
 import com.steve.weatherquest.models.ForecastPeriodModel
 import com.steve.weatherquest.ui.ExpandableSearchView
-import com.steve.weatherquest.ui.InitializingScreen
-import com.steve.weatherquest.ui.LocationInfoScreen
 import com.steve.weatherquest.ui.PermissionRationaleDialog
-import com.steve.weatherquest.ui.ServicesUnavailableScreen
 import com.steve.weatherquest.ui.WeatherInfoScreen
 import com.steve.weatherquest.ui.theme.NewComposeWeatherTestsTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,7 +62,6 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var locationRepository: LocationRepository
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
 
@@ -103,7 +97,6 @@ class MainActivity : ComponentActivity() {
     // This is only ever triggered by LocationPermissionState's 'onResult' when permission is granted.
     fun getLocation() {
         locationRepository.provideTheLocation(onGpsSuccessResult = { viewModel.setWeatherLocationFromDeviceLocation() })
-        //  Toast.makeText(this, "Location requested", Toast.LENGTH_SHORT).show()
     }
 
     /**
@@ -153,7 +146,6 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("MissingSuperCall")
     @Deprecated("Not sure how else to do it")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        // super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0x1) {
             when (resultCode) {
                 RESULT_OK -> {
@@ -172,35 +164,6 @@ class MainActivity : ComponentActivity() {
 
 }
 
-
-@Composable
-fun LocationTestDisplay(
-    viewModel: MainViewModel,
-    locationPermissionState: LocationPermissionState,
-    modifier: Modifier
-) {
-    val uiState by viewModel.playServicesAvailableState.collectAsState()
-    val currentLocation by viewModel.deviceLocation.collectAsState()
-    val isLoading by viewModel.isLocationLoading.collectAsState()
-
-    // Determine which screen to show
-    when (uiState) {
-        PlayServicesAvailableState.Initializing -> InitializingScreen()
-        PlayServicesAvailableState.PlayServicesUnavailable -> ServicesUnavailableScreen()
-        PlayServicesAvailableState.PlayServicesAvailable -> {
-            LocationInfoScreen(
-                showDegradedExperience = locationPermissionState.showDegradedExperience,
-                needsPermissionRationale = locationPermissionState.shouldShowRationale(),
-                onButtonClick = { locationPermissionState.requestPermission() },
-                isLoading = isLoading,
-                location = currentLocation
-            )
-        }
-    }
-
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherDisplay(
     locationPermissionState: LocationPermissionState,
@@ -253,7 +216,6 @@ fun WeatherDisplay(
         topBar = {
             WeatherTopBar(
                 suggestions = suggestions,
-                onSuggestionClick = { viewModel.onSuggestionClicked(it) },
                 searchedLocation = searchedText,
                 onSearchChange = { viewModel.onSearchFieldValueChange(it) },
                 onGpsClick = { locationPermissionState.requestPermission() },
@@ -318,12 +280,10 @@ fun WeatherDisplay(
 }
 
 
-//@OptIn(ExperimentalAnimationApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherTopBar(
     suggestions: List<AnnotatedString>,
-    onSuggestionClick: (Int) -> Unit,
     searchedLocation: String,
     onSearchChange: (String) -> Unit,
     onGpsClick: () -> Unit,
@@ -368,7 +328,6 @@ fun WeatherTopBar(
             onGpsClick()
         }
     }
-
 
 
     Surface {
@@ -454,12 +413,10 @@ fun WeatherTopBar(
 fun WeatherMenu(
     switchUnits: () -> Unit,
     isMetric: Boolean,
-    showMenu: () -> Unit,
-    //goToPolicy: () -> Unit
+    showMenu: () -> Unit
 ) {
     Card(elevation = CardDefaults.cardElevation(10.dp)) {
         Surface(
-//            tonalElevation = 5.dp,
             modifier = Modifier.width(200.dp)
         ) {
 
@@ -566,6 +523,5 @@ fun Modifier.clearFocusFromHoistedState(
 @Composable
 fun DefaultPreview() {
     NewComposeWeatherTestsTheme {
-        //  WeatherMenu()
     }
 }
