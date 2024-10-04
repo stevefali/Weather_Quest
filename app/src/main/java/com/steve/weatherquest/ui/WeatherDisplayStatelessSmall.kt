@@ -104,7 +104,7 @@ fun CurrentWeatherDisplaySmall(
                         Text(
                             text = currentWeather.description.capitalizeEachWord(),
                             style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.fillMaxWidth(3/5f),
+                            modifier = Modifier.fillMaxWidth(3 / 5f),
                             minLines = 1,
                             maxLines = 3,
                         )
@@ -208,16 +208,6 @@ fun CurrentWeatherDisplaySmall(
                             onUnitsClick = { switchUnits() }
                         )
                     }
-
-//            Divider(
-//                thickness = 3.dp,
-//                modifier = Modifier
-//                    .padding(vertical = 10.dp)
-//                    .animateEnterExit(
-//                        enter = fadeIn(animationSpec = tween(600)),
-//                        exit = fadeOut(animationSpec = tween(600))
-//                    )
-//            )
                 }
             }
         }
@@ -261,9 +251,6 @@ fun FiveDaysForecastDisplaySmall(
                     onClick = { onDayClicked(it) },
                     index = index
                 )
-//                if (index < wholeDays.lastIndex) {
-//                    Divider(thickness = 1.dp)
-//                }
             }
             item {
                 Text(
@@ -338,7 +325,7 @@ fun ForecastFullDayDisplaySmall(
                 Text(
                     text = day.dayDescription.capitalizeEachWord(),
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.fillMaxWidth(3/5f),
+                    modifier = Modifier.fillMaxWidth(3 / 5f),
                     minLines = 1,
                     maxLines = 3,
                 )
@@ -451,9 +438,6 @@ fun ForecastDayFocusedDisplaySmall(
                     period = item,
                     switchPeriodUnits = { switchUnits() }
                 )
-//                if (index < periods.lastIndex) {
-//                    Divider(thickness = 1.dp)
-//                }
             }
             item {
                 Text(
@@ -514,7 +498,7 @@ fun PeriodDisplaySmall(
                 Text(
                     text = period.description.capitalizeEachWord(),
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.fillMaxWidth(3/5f),
+                    modifier = Modifier.fillMaxWidth(3 / 5f),
                     minLines = 1,
                     maxLines = 3,
                 )
@@ -753,7 +737,6 @@ fun CurrentSmallerSmall(
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                // modifier = Modifier.clickable { onClick() }
             ) {
 
                 Row {
@@ -789,10 +772,6 @@ fun CurrentSmallerSmall(
                 modifier = Modifier.size(45.dp)
             )
         }
-//        Divider(
-//            thickness = 2.dp,
-//            //  modifier = Modifier.padding(vertical = 8.dp)
-//        )
     }
 
 }

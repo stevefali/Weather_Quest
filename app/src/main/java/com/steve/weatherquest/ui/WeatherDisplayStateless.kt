@@ -93,7 +93,7 @@ fun CurrentWeatherDisplay(
                         text = stringResource(id = R.string.current_weather),
                         style = MaterialTheme.typography.headlineLarge,
 
-                    )
+                        )
                 }
 
 
@@ -108,7 +108,7 @@ fun CurrentWeatherDisplay(
                         Text(
                             text = currentWeather.description.capitalizeEachWord(),
                             style = MaterialTheme.typography.headlineSmall,
-                            modifier = Modifier.fillMaxWidth(3/5f),
+                            modifier = Modifier.fillMaxWidth(3 / 5f),
                             minLines = 1,
                             maxLines = 3,
                         )
@@ -210,15 +210,6 @@ fun CurrentWeatherDisplay(
                         )
                     }
                 }
-//                    Divider(
-//                        thickness = 3.dp,
-//                        modifier = Modifier
-//                            .padding(vertical = 8.dp)
-//                            .animateEnterExit(
-//                                enter = fadeIn(animationSpec = tween(600)),
-//                                exit = fadeOut(animationSpec = tween(600))
-//                            )
-//                    )
             }
 
         }
@@ -227,7 +218,6 @@ fun CurrentWeatherDisplay(
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FiveDaysForecastDisplay(
     wholeDays: List<ForecastWholeDayModel>,
@@ -268,9 +258,6 @@ fun FiveDaysForecastDisplay(
                     onClick = { onDayClicked(it) },
                     index = index
                 )
-//                    if (index < wholeDays.lastIndex) {
-//                        Divider(thickness = 1.dp)
-//                    }
             }
             item {
                 Text(
@@ -337,7 +324,7 @@ fun ForecastFullDayDisplay(
                 Text(
                     text = day.dayDescription.capitalizeEachWord(),
                     style = MaterialTheme.typography.headlineSmall,
-                            modifier = Modifier.fillMaxWidth(3/5f),
+                    modifier = Modifier.fillMaxWidth(3 / 5f),
                     minLines = 1,
                     maxLines = 3,
                 )
@@ -449,9 +436,6 @@ fun ForecastDayFocusedDisplay(
                     period = item,
                     switchPeriodUnits = { switchUnits() },
                 )
-//                if (index < periods.lastIndex) {
-//                    Divider(thickness = 1.dp)
-//                }
             }
             item {
                 Text(
@@ -520,7 +504,7 @@ fun PeriodDisplay(
                 Text(
                     text = period.description.capitalizeEachWord(),
                     style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.fillMaxWidth(3/5f),
+                    modifier = Modifier.fillMaxWidth(3 / 5f),
                     minLines = 1,
                     maxLines = 3,
                 )
@@ -796,10 +780,6 @@ fun CurrentSmaller(
                 modifier = Modifier.size(60.dp)
             )
         }
-//        Divider(
-//            thickness = 3.dp,
-//            modifier = Modifier.padding(vertical = 8.dp)
-//        )
     }
 
 }

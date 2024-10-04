@@ -138,40 +138,4 @@ fun SearchSuggestionCard(
 }
 
 
-/**
- * State holder class for the [ExpandableSearchBar]
- */
-//class SearchBarUserInputState(private val hint: String, initialText: String) {
-//
-//    var text by mutableStateOf(initialText)
-//
-//    val isHint: Boolean
-//        get() = text == hint
-//
-//    /**
-//     * Custom saver since rememberSaveable can't save [SearchBarUserInputState] in a bundle
-//     */
-//    companion object {
-//        val Saver: Saver<SearchBarUserInputState, *> = listSaver(
-//            save = { listOf(it.hint, it.text) },
-//            restore = {
-//                SearchBarUserInputState(
-//                    hint = it[0],
-//                    initialText = it[1]
-//                )
-//            }
-//        )
-//    }
-//
-//}
-//
-///**
-// * Custom rememberer for the custom saver for [SearchBarUserInputState]
-// */
-//@Composable
-//fun rememberSearchBarUserInputState(hint: String): SearchBarUserInputState =
-//    rememberSaveable(hint, saver = SearchBarUserInputState.Saver) {
-//        SearchBarUserInputState(hint, hint)
-//    }
-
 

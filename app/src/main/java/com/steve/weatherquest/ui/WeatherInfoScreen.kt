@@ -45,14 +45,9 @@ fun WeatherInfoScreen(
     isMetric: Boolean,
     isMenuShown: Boolean,
     showMenu: () -> Unit,
-    modifier: Modifier =  Modifier
-
-    ) {
-
-
+    modifier: Modifier = Modifier
+) {
     Box() {
-
-
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -60,7 +55,6 @@ fun WeatherInfoScreen(
                 .fillMaxSize()
                 .padding(horizontal = 8.dp)
         ) {
-
 
             // LaunchedEffect to display weather at startup
             LaunchedEffect(Unit) {
@@ -70,32 +64,27 @@ fun WeatherInfoScreen(
                 onRequestRefresh(false)
             }
 
-
-//
-
-
-
             // Search result display
             if (wideness < 840.dp) {
                 AnimatedVisibility(isDroppedDown) {
                     Surface(color = MaterialTheme.colorScheme.surfaceVariant) {
 
 
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateContentSize()
-                    ) {
-                        items(suggestions) { suggestion ->
-                            SearchSuggestionCard(
-                                location = suggestion,
-                                onClick = {
-                                    onSuggestionClicked(suggestions.indexOf(suggestion))
-                                    showSearch(false)
-                                }
-                            )
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateContentSize()
+                        ) {
+                            items(suggestions) { suggestion ->
+                                SearchSuggestionCard(
+                                    location = suggestion,
+                                    onClick = {
+                                        onSuggestionClicked(suggestions.indexOf(suggestion))
+                                        showSearch(false)
+                                    }
+                                )
+                            }
                         }
-                    }
                     }
                 }
             }
@@ -117,16 +106,12 @@ fun WeatherInfoScreen(
             }
 
 
-
             val lazyListState = rememberLazyListState()
 
 
             Box( // Box to hold the forecast display so we can overlay a progress indicator
                 modifier = Modifier.fillMaxWidth()
             ) {
-
-
-
                 if (currentWeather != null) {
                     if (wideness <= 400.dp) {
                         CurrentWeatherDisplaySmall(
@@ -247,8 +232,6 @@ fun WeatherInfoScreen(
                         }
                     }
 
-
-
                     Box {
                         if (currentWeather != null) {
                             CurrentWeatherDisplayExpanded(
@@ -269,12 +252,12 @@ fun WeatherInfoScreen(
                 }
 
                 if (currentWeather != null) {
-                Divider( // Middle
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(3.dp)
-                )
-            }
+                    Divider( // Middle
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(3.dp)
+                    )
+                }
 
                 Box(
                     modifier = Modifier
@@ -311,7 +294,6 @@ fun WeatherInfoScreen(
                                         isBackEnabled = isShowingFocused,
                                     )
                                 }
-
                             }
                         }
                     }
@@ -338,137 +320,7 @@ fun WeatherInfoScreen(
                 )
             }
         }
-
     }
-
-//    /**
-//     * New Stuff
-//     */
-//        if (currentWeather != null) {
-//
-//            // Check whether the large current weather display has scrolled off screen
-//            val isLargeCurrentOnScreen by remember {
-//                derivedStateOf {
-//                    lazyListState.layoutInfo.visibleItemsInfo.any { it.key == LARGE_CURRENT_KEY }
-//                }
-//            }
-//
-//
-//            // val theKey = remember { derivedStateOf { lazyListState.layoutInfo.visibleItemsInfo.last { it.key == LARGE_CURRENT_KEY } }.value.offset > 0 } }
-//
-//
-//            if (wideness <= 400.dp) {
-//
-//            } else {
-//
-//                Column() {
-//
-//                    // Current weather title or small current weather display
-//                    AnimatedVisibility(
-//                        visible = isLargeCurrentOnScreen,
-//                        enter = fadeIn(animationSpec = tween(800)),
-//                      //  exit = fadeOut(animationSpec = tween(500))
-//                    )
-////                    if (isLargeCurrentOnScreen)
-//                     {
-//                        Column(
-//                            modifier = Modifier.fillMaxWidth(),
-//                                //.animateContentSize(animationSpec = tween(400)),
-//                            horizontalAlignment = Alignment.CenterHorizontally
-//                        ) {
-//
-//                            Text(
-//                                text = stringResource(id = R.string.current_weather),
-//                                style = MaterialTheme.typography.headlineLarge,
-//                            )
-//                        }
-//                    }
-//                    AnimatedVisibility(
-//                        visible = !isLargeCurrentOnScreen,
-//                        enter = fadeIn(animationSpec = tween(800)),
-//                       // exit = fadeOut(animationSpec = tween(100))
-//                    )
-////                    if (!isLargeCurrentOnScreen)
-//                     {
-//                        CurrentSmaller(
-//                            currentWeather = currentWeather,
-//                            switchUnits = { switchUnits() },
-//                        )
-//                    }
-//
-//                    LazyColumn(
-//                        modifier = Modifier
-//                            .fillMaxWidth(),
-//                        state = lazyListState
-//                    ) {
-//                        item(key = LARGE_CURRENT_KEY) {
-//                            CurrentWeatherDisplay(
-//                                currentWeather = currentWeather,
-//                                switchUnits = { switchUnits() },
-//                              //  isLargeCurrentOnScreen = isLargeCurrentOnScreen
-//                            )
-//                        }
-//                        stickyHeader {// Header for Forecast display
-//                            Surface() {
-//                                Column(
-//                                    modifier = Modifier.fillMaxWidth(),
-//                                    horizontalAlignment = Alignment.CenterHorizontally
-//                                ) {
-//                                    Text(
-//                                        text = stringResource(id = R.string.forecast),
-//                                        style = MaterialTheme.typography.headlineLarge,
-//                                    )
-//                                    if (isShowingFocused) {
-//                                        if (forecastDayFocused != null) {
-//                                            Text(
-//                                                text = forecastDayFocused[0].date,
-//                                                style = MaterialTheme.typography.headlineSmall,
-//                                            )
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        // Forecast Whole Days Display
-//                        if (!isShowingFocused) {
-//                            if (forecastWholeDay != null) {
-//                                itemsIndexed(forecastWholeDay) { index, item ->
-//                                    ForecastFullDayDisplay(
-//                                        day = item,
-//                                        switchUnits = { switchUnits() },
-//                                        onClick = { onDayClicked(it) },
-//                                        index = index
-//                                    )
-//                                    if (index < forecastWholeDay.lastIndex) {
-//                                        Divider(thickness = 1.dp)
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        // Forecast Day Periods display
-//                        if (isShowingFocused) {
-//                            if (forecastDayFocused != null) {
-//                                itemsIndexed(forecastDayFocused) { index, item ->
-//                                    PeriodDisplay(
-//                                        period = item,
-//                                        switchPeriodUnits = { switchUnits() },
-//                                        onClickBack = { onCancelFocus() },
-//                                        isBackEnabled = isShowingFocused,
-//                                    )
-//                                    if (index < forecastDayFocused.lastIndex) {
-//                                        Divider(thickness = 1.dp)
-//                                    }
-//                                }
-//                            }
-//
-//                        }
-//                    }
-//
-//                }
-//
-//
-//            }// end wideness normal phone
-//        }
 }
 
 

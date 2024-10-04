@@ -178,9 +178,6 @@ fun FiveDaysForecastDisplayExpanded(
                     onClick = { onDayClicked(it) },
                     index = index
                 )
-//                if (index < wholeDays.lastIndex) {
-//                    Divider(thickness = 1.dp)
-//                }
             }
             item {
                 Text(
@@ -355,9 +352,6 @@ fun ForecastDayFocusedDisplayExpanded(
                     period = item,
                     switchPeriodUnits = { switchUnits() },
                 )
-//                if (index < periods.lastIndex) {
-//                    Divider(thickness = 1.dp)
-//                }
             }
             item {
                 Text(
