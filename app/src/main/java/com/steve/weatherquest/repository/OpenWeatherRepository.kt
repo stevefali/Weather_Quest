@@ -502,12 +502,12 @@ class OpenWeatherRepository @Inject constructor(
                     code = item.weather!![0].id,
                     iconResId = selectWeatherIndividualIcon(item.weather[0].id, item.sys.pod!!),
                     description = item.weather[0].description,
-                    temp = item.main!!.temp!!,
-                    feelsLike = item.main.feelsLike!!,
-                    humidity = item.main.humidity!!,
-                    cloudiness = item.clouds!!.all!!,
-                    windSpeed = item.wind!!.speed!!,
-                    windGust = if (item.wind.gust != null) {
+                    temp = item.main?.temp ?: 0.0,
+                    feelsLike = item.main?.feelsLike ?: 0.0,
+                    humidity = item.main?.humidity ?: 0.0,
+                    cloudiness = item.clouds?.all ?: 0,
+                    windSpeed = item.wind?.speed ?: 0.0,
+                    windGust = if (item.wind?.gust != null) {
                         item.wind.gust
                     } else {
                         null
@@ -522,7 +522,7 @@ class OpenWeatherRepository @Inject constructor(
                     } else {
                         null
                     },
-                    visibility = item.visibility!!,
+                    visibility = item.visibility ?: 0,
                     pop = (item.pop!! * 100).toInt()
                 )
             )
