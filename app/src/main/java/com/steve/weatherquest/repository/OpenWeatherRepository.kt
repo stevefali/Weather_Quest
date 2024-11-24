@@ -899,12 +899,21 @@ class OpenWeatherRepository @Inject constructor(
             null
         }
         val rain: String? = if (_currentWeatherResponse!!.rain != null) {
-            determinePrecipAndString(_currentWeatherResponse!!.rain!!.threeHours)
+            if (_currentWeatherResponse!!.rain != null) {
+                determinePrecipAndString(_currentWeatherResponse!!.rain!!.threeHours ?: 0.0)
+            } else {
+                null
+            }
         } else {
             null
         }
         val snow: String? = if (_currentWeatherResponse!!.snow != null) {
-            determinePrecipAndString(_currentWeatherResponse!!.rain!!.threeHours)
+            if (_currentWeatherResponse!!.snow != null) {
+                determinePrecipAndString(_currentWeatherResponse!!.snow!!.threeHours ?: 0.0)
+            } else {
+                null
+            }
+
         } else {
             null
         }
